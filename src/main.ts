@@ -139,8 +139,14 @@ async function addFiles(files: File[]): Promise<void> {
     const result = await parseFiles(files);
     for (const recipe of result.recipes) {
       if (recipe.image) {
-        try { recipe.image = await normalizeImage(recipe.image); }
-        catch { recipe.warnings.push('The matched image was preserved but could not be normalized.'); recipe.image = withPreview(recipe.image); }
+        const matchedImage = recipe.image;
+        try { recipe.image = await normalizeImage(matchedImage); }
+        catch {
+          recipe.image = undefined;
+          const warning = `Skipped unreadable image ${matchedImage.name}. Choose a valid JPEG, PNG, WebP, GIF, or HEIC replacement.`;
+          recipe.warnings.push(warning);
+          result.warnings.push(warning);
+        }
       }
     }
     recipes.push(...result.recipes);

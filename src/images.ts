@@ -23,14 +23,33 @@ async function imageBitmapFrom(blob: Blob): Promise<ImageBitmap> {
   });
 }
 
+async function assertDecodableImage(blob: Blob): Promise<void> {
+  const url = URL.createObjectURL(blob);
+  try {
+    await new Promise<void>((resolve, reject) => {
+      const image = new Image();
+      image.onload = () => image.naturalWidth > 0 && image.naturalHeight > 0
+        ? resolve()
+        : reject(new Error('Image has no readable pixels'));
+      image.onerror = () => reject(new Error('Image could not be decoded'));
+      image.src = url;
+    });
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
+
 export async function normalizeImage(image: RecipeImage): Promise<RecipeImage> {
-  if (image.mime === 'image/gif' || image.extension === 'gif') return withPreview(image);
   let blob = new Blob([image.bytes as BlobPart], { type: image.mime });
   if (['heic', 'heif'].includes(image.extension) || /hei[cf]/.test(image.mime)) {
     const { default: heic2any } = await import('heic2any');
     const converted = await heic2any({ blob, toType: 'image/jpeg', quality: 0.9 });
     blob = Array.isArray(converted) ? converted[0] : converted;
   }
+  // A fallback is only safe after the browser has confirmed it can render the
+  // supplied bytes. This keeps corrupt files out of previews and ZIP exports.
+  await assertDecodableImage(blob);
+  if (image.mime === 'image/gif' || image.extension === 'gif') return withPreview(image);
   try {
     const bitmap = await imageBitmapFrom(blob);
     const ratio = Math.min(1, 1600 / Math.max(bitmap.width, bitmap.height));

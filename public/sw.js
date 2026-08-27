@@ -1,5 +1,10 @@
 const CACHE = 'recipe-exit-pack-v1';
-const SHELL = ['/', '/privacy/', '/terms/', '/legal.css', '/favicon.svg', '/site.webmanifest', '/assets/hero-recipe-jailbreak-720.webp'];
+// Vite replaces this marker in dist/sw.js with every hashed JS, CSS, and
+// landing-page asset referenced by the current app shell. Keeping the base
+// shell here also makes this source file safe when Vite serves it in dev.
+const SHELL = ['/', '/privacy/', '/terms/', '/legal.css', '/favicon.svg', '/site.webmanifest', '/assets/hero-recipe-jailbreak-720.webp'
+  // __PRECACHE_ASSETS__
+];
 self.addEventListener('install', (event) => event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(SHELL)).then(() => self.skipWaiting())));
 self.addEventListener('activate', (event) => event.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key)))).then(() => self.clients.claim())));
 self.addEventListener('fetch', (event) => {
