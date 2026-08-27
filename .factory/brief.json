@@ -1,0 +1,10 @@
+{
+  "slug": "recipe-exit-pack",
+  "title": "Recipe Exit Pack",
+  "territory": "utilities",
+  "user": "People leaving a single-platform recipe app who need their own recipes, notes, photos, and source attribution in a portable offline format.",
+  "smallest_useful_product": "A browser-local importer for user-exported recipe files and pasted recipe text that writes a zip of human-readable Markdown, normalized images, JSON metadata, and a source/attribution manifest.",
+  "monetization": "one-time",
+  "constraints": "Only transform user-supplied exports/content; preserve source URL and attribution; do all conversion in-browser; do not bypass access controls or redistribute copyrighted recipe media.",
+  "artifact_class": "static-web"
+}

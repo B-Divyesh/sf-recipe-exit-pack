@@ -1,0 +1,9 @@
+{
+  "generated_at": "2026-08-27",
+  "generator": "/opt/fleet/lib/gen-image.sh",
+  "deployment": "factory-image",
+  "size": "1536x1024",
+  "quality": "high",
+  "prompt": "Use case: stylized-concept. Asset type: responsive landing-page hero illustration. An editorial neo-brutalist paper-cut still life showing a personal recipe escaping a closed phone app into an owner-controlled archive. Warm off-white archival paper workbench. A tomato-red generic phone-shaped folder, cream recipe card with abstract ingredient marks, small food-photo tile, acid-lime tag, cobalt source-link ribbon, and black-edged archive box. Tactile hand-cut paper collage with subtle fibers and block-print imperfections. Landscape composition, objects centered, strong diagonal movement left to right, generous breathing room, readable at mobile crop. Direct studio light with crisp hard offset shadows. Limited palette: warm paper, near-black ink, acid lime, tomato red, cobalt blue. Original unbranded objects, no UI promises, no people. No text, no letters, no numbers, no logos, no watermark, no gradients, no glossy 3D, no photoreal people, no brand marks, no generic SaaS dashboard.",
+  "review": "Accepted: clear phone-to-archive story, no brand/logotype/watermark, coherent palette, no anatomy concerns. Abstract recipe marks are non-linguistic."
+}
