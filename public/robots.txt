@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://recipe-exit-pack.sociobot.in/sitemap.xml

@@ -45,4 +45,17 @@ describe('recipe parsing', () => {
     expect(recipe.sourceUrl).toBe('https://example.com/soup');
     expect(recipe.tags).toEqual(['winter', 'lunch']);
   });
+
+  it('preserves all core fields in a 100-recipe export', () => {
+    const input = Array.from({ length: 100 }, (_, index) => ({
+      name: `Recipe ${index + 1}`,
+      ingredients: [`${index + 1} cups ingredient`, 'salt'],
+      directions: ['Mix.', `Cook for ${index + 1} minutes.`],
+      notes: `Household note ${index + 1}`,
+      source_url: `https://example.com/recipe-${index + 1}`
+    }));
+    const recipes = parseJson(JSON.stringify(input), 'hundred-recipes.json');
+    expect(recipes).toHaveLength(100);
+    expect(recipes.every((recipe) => recipe.title && recipe.ingredients.length === 2 && recipe.steps.length === 2 && recipe.notes && recipe.sourceUrl)).toBe(true);
+  });
 });
