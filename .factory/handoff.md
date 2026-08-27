@@ -44,7 +44,9 @@ ready to release.
 
 See [`.factory/verification.md`](verification.md) for commands, exact
 reproduction evidence, severity rationale, and the outstanding 100-image
-corpus validation gap.
+corpus validation gap. A fresh Lighthouse numeric run also remains required;
+the verifier's Lighthouse CLI crashed against its supplied Chrome binary, so
+only its underlying budget/accessibility checks are fresh evidence here.
 
 ## Re-run after fixes
 

@@ -115,6 +115,13 @@ the brief's 90%-with-viewable-image success measure is not independently
 demonstrated. This is additional acceptance evidence still required after the
 P1 fixes.
 
+A fresh Lighthouse numeric run was not obtained: the installed Lighthouse CLI
+could not connect to, then crashed, the supplied Playwright Chrome 151 binary.
+This is a verifier-tool compatibility limitation, not treated as product
+evidence. Raw bundle budgets, mobile/desktop layout, response policies,
+console/page errors, and axe were independently checked above; rerun
+Lighthouse with the release browser before a PASS handoff.
+
 ## Re-run
 
 ```sh
