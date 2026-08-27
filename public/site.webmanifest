@@ -1,0 +1,10 @@
+{
+  "name": "Recipe Exit Pack",
+  "short_name": "Exit Pack",
+  "description": "Turn your own recipe exports into a portable offline archive.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f3efdf",
+  "theme_color": "#f3efdf",
+  "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}
