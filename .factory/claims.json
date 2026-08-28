@@ -1,0 +1,44 @@
+[
+  {
+    "id": "recipe-zip-content",
+    "claim": "Download a recipe ZIP with recipe text files, a data file, photos, and a source list.",
+    "where": "landing format section, converter, README",
+    "test": "npm run test:e2e -- --grep @claim:recipe-zip-content",
+    "sandbox": "fresh /demo/ context; download sample ZIP and inspect its entries"
+  },
+  {
+    "id": "demo-isolation",
+    "claim": "Demo sample data is separate from real data and can be reset.",
+    "where": "demo banner, .factory/demo.md, README",
+    "test": "npm run test:e2e -- --grep @claim:demo-isolation",
+    "sandbox": "fresh /demo/ context; edit a sample, reset it, and inspect IndexedDB names"
+  },
+  {
+    "id": "offline-after-first-visit",
+    "claim": "Works offline after the first visit.",
+    "where": "landing facts, README",
+    "test": "npm run test:e2e -- --grep @claim:offline-after-first-visit",
+    "sandbox": "fresh /demo/ context; wait for service worker, set offline, reload, and edit a sample"
+  },
+  {
+    "id": "no-recipe-uploads",
+    "claim": "No recipe uploads.",
+    "where": "landing facts, footer, README",
+    "test": "npm run test:e2e -- --grep @claim:no-recipe-uploads",
+    "sandbox": "fresh /demo/ context; intercept the complete sample review and download flow and allow same-origin requests only"
+  },
+  {
+    "id": "no-tracking",
+    "claim": "No tracking.",
+    "where": "footer, privacy policy",
+    "test": "npm run test:e2e -- --grep @claim:no-tracking",
+    "sandbox": "fresh /demo/ context; intercept the complete sample review and download flow and allow same-origin requests only"
+  },
+  {
+    "id": "free-download",
+    "claim": "Recipe ZIP download stays free.",
+    "where": "Archive Plus section, README",
+    "test": "npm run test:e2e -- --grep @claim:free-download",
+    "sandbox": "fresh /demo/ context without license storage; download the sample ZIP"
+  }
+]

@@ -1,20 +1,21 @@
 import type { Recipe } from './types';
 
 const DB_NAME = 'recipe-exit-pack';
+const DEMO_DB_NAME = 'demo:recipe-exit-pack';
 const STORE = 'workbench';
 const KEY = 'current';
 
-function openDb(): Promise<IDBDatabase> {
+function openDb(name = DB_NAME): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, 1);
+    const request = indexedDB.open(name, 1);
     request.onupgradeneeded = () => request.result.createObjectStore(STORE);
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
   });
 }
 
-export async function saveWorkbench(recipes: Recipe[]): Promise<void> {
-  const db = await openDb();
+async function save(dbName: string, recipes: Recipe[]): Promise<void> {
+  const db = await openDb(dbName);
   await new Promise<void>((resolve, reject) => {
     const transaction = db.transaction(STORE, 'readwrite');
     transaction.objectStore(STORE).put(recipes.map((recipe) => ({ ...recipe, image: recipe.image ? { ...recipe.image, previewUrl: undefined } : undefined })), KEY);
@@ -24,8 +25,8 @@ export async function saveWorkbench(recipes: Recipe[]): Promise<void> {
   db.close();
 }
 
-export async function loadWorkbench(): Promise<Recipe[]> {
-  const db = await openDb();
+async function load(dbName: string): Promise<Recipe[]> {
+  const db = await openDb(dbName);
   const recipes = await new Promise<Recipe[]>((resolve, reject) => {
     const request = db.transaction(STORE).objectStore(STORE).get(KEY);
     request.onsuccess = () => resolve((request.result as Recipe[] | undefined) ?? []);
@@ -35,8 +36,8 @@ export async function loadWorkbench(): Promise<Recipe[]> {
   return recipes;
 }
 
-export async function clearWorkbench(): Promise<void> {
-  const db = await openDb();
+async function clear(dbName: string): Promise<void> {
+  const db = await openDb(dbName);
   await new Promise<void>((resolve, reject) => {
     const request = db.transaction(STORE, 'readwrite').objectStore(STORE).delete(KEY);
     request.onsuccess = () => resolve();
@@ -44,3 +45,13 @@ export async function clearWorkbench(): Promise<void> {
   });
   db.close();
 }
+
+export const saveWorkbench = (recipes: Recipe[]) => save(DB_NAME, recipes);
+export const loadWorkbench = () => load(DB_NAME);
+export const clearWorkbench = () => clear(DB_NAME);
+
+// Demo data is deliberately kept in its own IndexedDB namespace. The demo
+// never opens the real workbench database or license storage.
+export const saveDemoWorkbench = (recipes: Recipe[]) => save(DEMO_DB_NAME, recipes);
+export const loadDemoWorkbench = () => load(DEMO_DB_NAME);
+export const clearDemoWorkbench = () => clear(DEMO_DB_NAME);

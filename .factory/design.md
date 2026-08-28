@@ -60,3 +60,7 @@ Prompt sheet:
 - Candidate source and JSON prompt sidecar live in `assets/src/`; shipped WebP is optimized to ≤300 KB.
 - Interface icons are hand-authored inline SVG using simple universal symbols; no third-party icon set.
 - The footer discloses that the hero illustration was AI-generated for this product.
+
+### Social preview
+
+- `public/assets/recipe-exit-pack-social.jpg` is a 1200 × 630 crop for Open Graph and Twitter cards. It was generated on 2026-08-28 with the same factory Azure deployment and visual prompt sheet, then reviewed for text artifacts, brands, and unintended symbols. The source PNG and exact generation prompt are retained beside it as `recipe-exit-pack-social-source.png` and `.png.json`.

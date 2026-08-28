@@ -3,11 +3,19 @@ import { buildArchive } from './exporter';
 import { imageFromFile, normalizeImage, withPreview } from './images';
 import { initializeLicense, verifyLicense } from './license';
 import { parseFiles, parseJson, parseRecipeText } from './parser';
-import { loadWorkbench, saveWorkbench } from './storage';
+import { clearDemoWorkbench, loadDemoWorkbench, saveDemoWorkbench, loadWorkbench, saveWorkbench } from './storage';
+import { sampleRecipes } from './demo';
 import type { LicenseState } from './license';
 import type { Recipe } from './types';
 
 const $ = <T extends HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
+const requestedDemo = new URL(location.href).searchParams.get('demo') === '1';
+const isDemo = requestedDemo || location.pathname === '/demo' || location.pathname === '/demo/';
+if (requestedDemo) history.replaceState({}, '', '/demo/');
+if (isDemo) {
+  document.title = 'Demo — Recipe Exit Pack';
+  document.querySelector('meta[name="description"]')?.setAttribute('content', 'Try three sample recipes and download a recipe ZIP without saving to your real data.');
+}
 const fileInput = $('#file-input') as HTMLInputElement;
 const imageInput = $('#image-input') as HTMLInputElement;
 const workbench = $('#workbench');
@@ -120,9 +128,12 @@ function updateLayout(): void {
 }
 
 function scheduleSave(): void {
-  if (!unlocked) return;
+  if (!unlocked && !isDemo) return;
   window.clearTimeout(saveTimer);
-  saveTimer = window.setTimeout(() => saveWorkbench(recipes).catch(() => showMessage('Auto-resume could not save this workbench. Your current recipes are still safe in this tab.', true)), 450);
+  saveTimer = window.setTimeout(() => {
+    const save = isDemo ? saveDemoWorkbench : saveWorkbench;
+    save(recipes).catch(() => showMessage(isDemo ? 'The sample changes could not be saved. Reset the demo to restore it.' : 'Auto-resume could not save this workbench. Your current recipes are still safe in this tab.', true));
+  }, 450);
 }
 
 function duplicates(): number {
@@ -252,6 +263,7 @@ function applyLicenseState(state: LicenseState): void {
 
 $('#license-form').addEventListener('submit', (event) => {
   event.preventDefault();
+  if (isDemo) { $('#license-message').textContent = 'Start for real before restoring a license.'; return; }
   const token = ($('#license-input') as HTMLInputElement).value.trim();
   const message = $('#license-message');
   if (!token) { message.textContent = 'Paste the license token from your receipt.'; return; }
@@ -262,5 +274,34 @@ $('#license-form').addEventListener('submit', (event) => {
 window.addEventListener('online', updateConnection);
 window.addEventListener('offline', updateConnection);
 updateConnection();
-initializeLicense(applyLicenseState);
+if (isDemo) {
+  $('#demo-banner').hidden = false;
+  $('#support').hidden = true;
+  $('#hero-title').textContent = 'Try the sample recipe ZIP';
+  $('#hero-lede').textContent = 'See three sample recipes ready to review and download.';
+  $('#demo-action').hidden = true;
+  loadDemoWorkbench().then((saved) => {
+    recipes = saved.length ? saved.map((recipe) => ({ ...recipe, image: recipe.image ? withPreview(recipe.image) : undefined })) : sampleRecipes();
+    selectedId = recipes[0]?.id ?? '';
+    updateLayout();
+    if (!saved.length) scheduleSave();
+  }).catch(() => {
+    recipes = sampleRecipes(); selectedId = recipes[0]?.id ?? ''; updateLayout();
+  });
+  $('#reset-demo').addEventListener('click', async () => {
+    await clearDemoWorkbench();
+    recipes = sampleRecipes(); selectedId = recipes[0].id; updateLayout(); scheduleSave();
+    showMessage('Sample recipes reset. Nothing was saved to your real data.');
+  });
+  $('#start-real').addEventListener('click', async () => {
+    await clearDemoWorkbench();
+    location.assign('/');
+  });
+} else {
+  initializeLicense(applyLicenseState);
+}
+requestAnimationFrame(() => {
+  $('#route-announcer').textContent = isDemo ? 'Demo loaded.' : 'Recipe Exit Pack loaded.';
+  $('#hero-title').focus({ preventScroll: true });
+});
 if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => { /* offline remains optional */ }));

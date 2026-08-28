@@ -4,14 +4,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#f3efdf" />
-    <meta name="description" content="Turn your own recipe-app exports into portable Markdown, JSON, normalized images, and an attribution manifest — entirely in your browser." />
+    <meta name="description" content="Convert recipe app exports into a recipe ZIP with text files, a data file, photos, and source links on your device." />
+    <link rel="canonical" href="https://recipe-exit-pack.sociobot.in/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Recipe Exit Pack — Convert recipe exports" />
+    <meta property="og:description" content="Convert recipe app exports into files you control on your device." />
+    <meta property="og:image" content="https://recipe-exit-pack.sociobot.in/assets/recipe-exit-pack-social.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Recipe Exit Pack — Convert recipe exports" />
+    <meta name="twitter:description" content="Convert recipe app exports into files you control on your device." />
+    <meta name="twitter:image" content="https://recipe-exit-pack.sociobot.in/assets/recipe-exit-pack-social.jpg" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="preload" href="/assets/hero-recipe-jailbreak-720.webp" as="image" type="image/webp" media="(max-width: 700px)" />
-    <title>Recipe Exit Pack — Take your recipes with you</title>
+    <title>Recipe Exit Pack — Convert recipe exports</title>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to converter</a>
+    <p id="route-announcer" class="sr-only" aria-live="polite"></p>
     <header class="site-header">
       <a class="brand" href="/" aria-label="Recipe Exit Pack home">
         <span class="brand-mark" aria-hidden="true">↗</span>
@@ -19,25 +32,32 @@
       </a>
       <nav aria-label="Main navigation">
         <a href="#converter">Convert</a>
-        <a href="#format">What you get</a>
-        <a href="#support">Archive Plus</a>
+        <a href="/demo/">Demo</a>
+        <a href="/privacy/">Privacy</a>
       </nav>
       <span id="connection-pill" class="status-pill" aria-live="polite">Checking connection…</span>
     </header>
 
     <main id="main">
+      <aside id="demo-banner" class="demo-banner" hidden aria-label="Demo controls">
+        <strong>Demo — sample data, nothing is saved</strong>
+        <span>Changes stay in a separate sample workspace.</span>
+        <button id="reset-demo" type="button">Reset demo</button>
+        <button id="start-real" type="button">Start for real</button>
+      </aside>
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-copy">
-          <p class="eyebrow"><span>Local-only tool</span> // Your recipes, released</p>
-          <h1 id="hero-title">Leave the app.<br /><span>Keep the recipes.</span></h1>
-          <p class="lede">Turn exports and pasted recipes into a tidy ZIP of readable Markdown, JSON, viewable images, and source attribution. Nothing leaves your browser.</p>
+          <p class="eyebrow"><span>Recipe files stay on this device</span></p>
+          <h1 id="hero-title" tabindex="-1">Turn recipe app exports into a ZIP.</h1>
+          <p id="hero-lede" class="lede">For people leaving a recipe app who want recipes, photos, notes, and source links in files they control.</p>
           <div class="hero-actions">
-            <a class="button button-primary" href="#converter">Pack my recipes <span aria-hidden="true">↓</span></a>
-            <a class="text-link" href="#format">See the archive format</a>
+            <a id="demo-action" class="button button-primary" href="/demo/">Try it with sample data <span aria-hidden="true">→</span></a>
+            <a class="button button-secondary" href="#converter">Choose recipe export <span aria-hidden="true">↓</span></a>
           </div>
+          <p class="action-note">See three sample recipes ready to review and download.</p>
           <ul class="trust-list" aria-label="Product guarantees">
-            <li><span aria-hidden="true">✓</span> No account</li>
-            <li><span aria-hidden="true">✓</span> Works offline</li>
+            <li><span aria-hidden="true">✓</span> Recipe ZIP download stays free</li>
+            <li><span aria-hidden="true">✓</span> Works offline after first visit</li>
             <li><span aria-hidden="true">✓</span> No recipe uploads</li>
           </ul>
         </div>
@@ -46,15 +66,15 @@
             <source srcset="/assets/hero-recipe-jailbreak-720.webp 720w, /assets/hero-recipe-jailbreak-1280.webp 1280w" sizes="(max-width: 800px) 100vw, 43vw" type="image/webp" />
             <img src="/assets/hero-recipe-jailbreak-1280.jpg" width="1280" height="853" alt="Paper-cut recipe card, food photo, source-link ribbon, and tags moving from a red phone into an archive box" decoding="async" fetchpriority="high" />
           </picture>
-          <figcaption><span>01</span> Input stays here. The useful parts come out.</figcaption>
+          <figcaption><span>01</span> Your files stay in this browser. You download the recipe ZIP.</figcaption>
         </figure>
       </section>
 
       <section id="converter" class="converter-section" aria-labelledby="converter-title">
         <div class="section-heading">
-          <p class="eyebrow">The packing bench</p>
-          <h2 id="converter-title">Build your exit pack</h2>
-          <p>Import, check, and download. Your browser does every step.</p>
+          <p class="eyebrow">Your recipe ZIP</p>
+          <h2 id="converter-title">Convert your recipe export</h2>
+          <p>Choose files or paste one recipe. Review the results, then download your recipe ZIP.</p>
         </div>
 
         <div class="step-strip" aria-label="Three step workflow">
@@ -68,7 +88,7 @@
           <div class="import-copy">
             <span class="step-stamp">Step 1</span>
             <h3 id="import-title">Bring in your recipes</h3>
-            <p>Choose files from an app export, or paste one recipe. Supported: ZIP, Paprika, Mela, JSON/JSON-LD, HTML, Markdown, plain text, and common recipe images.</p>
+            <p>Choose an app export or paste one recipe. Common ZIP, JSON, HTML, text, and recipe-image files work here.</p>
           </div>
           <div id="drop-zone" class="drop-zone">
             <input id="file-input" type="file" multiple aria-label="Choose recipe export files" accept=".zip,.melarecipes,.paprikarecipes,.paprikarecipe,.json,.jsonld,.html,.htm,.md,.markdown,.txt,.recipe,.jpg,.jpeg,.png,.webp,.gif,.heic,.heif,.avif,application/zip,image/*" />
@@ -81,7 +101,7 @@
             <div class="field">
               <label for="paste-input">Recipe text or JSON</label>
               <textarea id="paste-input" rows="9" placeholder="Lemon pasta&#10;&#10;Ingredients&#10;- 200 g pasta&#10;- 1 lemon&#10;&#10;Directions&#10;1. Cook the pasta…"></textarea>
-              <span class="field-hint">Headings such as Ingredients, Directions, Notes, and Source work best.</span>
+              <span class="field-hint">Use headings for ingredients, directions, notes, and source links.</span>
             </div>
             <button id="parse-paste" class="button button-secondary" type="button">Add pasted recipe</button>
           </details>
@@ -90,7 +110,7 @@
         <section id="workbench" class="workbench" aria-labelledby="check-title" hidden>
           <aside class="recipe-queue" aria-label="Imported recipes">
             <div class="queue-head">
-              <div><span class="step-stamp">Step 2</span><h3 id="check-title">Check the stack</h3></div>
+              <div><span class="step-stamp">Step 2</span><h3 id="check-title">Review imported recipes</h3></div>
               <span id="recipe-count" class="count-badge">0</span>
             </div>
             <div class="queue-tools">
@@ -103,7 +123,7 @@
 
           <form id="recipe-editor" class="recipe-editor">
             <div class="editor-head">
-              <div><p class="utility-label">Recipe docket</p><p id="file-origin" class="file-origin"></p></div>
+              <div><p class="utility-label">Selected recipe</p><p id="file-origin" class="file-origin"></p></div>
               <button id="remove-recipe" class="button button-danger" type="button">Remove recipe</button>
             </div>
             <div class="field">
@@ -146,14 +166,14 @@
         <section id="pack-panel" class="pack-panel" aria-labelledby="pack-title" hidden>
           <div>
             <span class="step-stamp invert">Step 3</span>
-            <h3 id="pack-title">Pack the portable archive</h3>
-            <p id="pack-summary">Your ZIP will include Markdown, JSON, images, and source attribution.</p>
+            <h3 id="pack-title">Download your recipe ZIP</h3>
+            <p id="pack-summary">Your ZIP includes recipe text files, a data file, photos, and a source list.</p>
           </div>
           <div class="pack-controls">
             <label for="archive-name">Archive name</label>
             <input id="archive-name" type="text" value="my-recipe-exit-pack" />
-            <label id="yaml-option" class="check-option locked-option"><input id="include-yaml" type="checkbox" disabled /> <span>Obsidian-ready YAML metadata <b>Plus</b></span></label>
-            <button id="download-pack" class="button button-export" type="button">Download exit pack <span aria-hidden="true">↘</span></button>
+            <label id="yaml-option" class="check-option locked-option"><input id="include-yaml" type="checkbox" disabled /> <span>Notes-app fields <b>Plus</b></span></label>
+            <button id="download-pack" class="button button-export" type="button">Download recipe ZIP <span aria-hidden="true">↘</span></button>
           </div>
           <div id="export-progress" class="export-progress" hidden aria-live="polite">
             <div class="progress-track"><span></span></div><p>Building your archive locally…</p>
@@ -163,9 +183,9 @@
 
       <section id="format" class="format-section" aria-labelledby="format-title">
         <div class="format-intro">
-          <p class="eyebrow">No mystery formats</p>
-          <h2 id="format-title">An archive you can read in ten years.</h2>
-          <p>Every recipe gets its own folder. Markdown is for people and notes apps; JSON is for future tools. The source manifest keeps the trail intact.</p>
+          <p class="eyebrow">Files you control</p>
+          <h2 id="format-title">What your recipe ZIP contains</h2>
+          <p>Each recipe has its own folder. The ZIP includes recipe text, a data file, photos, and a list of source links.</p>
         </div>
         <div class="folder-map" aria-label="Example archive folder structure">
           <div class="folder-tab">MY-RECIPE-EXIT-PACK.ZIP</div>
@@ -181,18 +201,18 @@
 <span>└──</span> README.txt</pre>
         </div>
         <div class="principle-grid">
-          <article><span>01</span><h3>Human-readable</h3><p>Open the Markdown with any text editor. No subscription or special viewer required.</p></article>
-          <article><span>02</span><h3>Attribution intact</h3><p>Source URLs, authors, original filenames, and notes stay attached to the recipe.</p></article>
-          <article><span>03</span><h3>Images normalized</h3><p>Supported photos become compact WebP files. Originals remain usable if conversion is unavailable.</p></article>
+          <article><span>01</span><h3>Recipe text files</h3><p>Each recipe folder includes a recipe text file you can open in a text editor.</p></article>
+          <article><span>02</span><h3>Source list</h3><p>Recipe source links, authors, notes, and imported filenames appear in the source list.</p></article>
+          <article><span>03</span><h3>Photos included</h3><p>Matched readable photos are included beside their recipe.</p></article>
         </div>
       </section>
 
       <section id="support" class="support-section" aria-labelledby="support-title">
         <div>
-          <p class="eyebrow">Keep the essentials free</p>
+          <p class="eyebrow">One-time option</p>
           <h2 id="support-title">Archive Plus — $9 once</h2>
-          <p>Import, edit, and export any number of recipes for free. A one-time Plus license supports this local-first tool and adds workbench auto-resume, duplicate checks, and Obsidian-ready YAML metadata.</p>
-          <ul><li>One-time purchase, no subscription</li><li>Move the license between devices</li><li>Core archive export is never locked</li></ul>
+          <p>The free converter imports, edits, and downloads recipe ZIPs. Archive Plus adds saved work, duplicate hints, and notes-app fields.</p>
+          <ul><li>One-time purchase, no subscription</li><li>Restore a license on your devices</li><li>Recipe ZIP download stays free</li></ul>
         </div>
         <div class="license-box">
           <p id="license-state" class="license-state">Free edition</p>
@@ -202,19 +222,19 @@
             <form id="license-form">
               <label for="license-input">License token</label>
               <input id="license-input" type="text" autocomplete="off" spellcheck="false" />
-              <button class="button button-secondary" type="submit">Verify license</button>
+              <button class="button button-secondary" type="submit">Check my Archive Plus license</button>
               <p id="license-message" class="field-hint" aria-live="polite"></p>
             </form>
           </details>
-          <p class="merchant-note">Secure checkout and refunds are handled by Sociobot / Dodo, the merchant of record. <a href="/terms/">Terms</a> · <a href="/privacy/">Privacy</a></p>
+          <p class="merchant-note">Sociobot / Dodo is the merchant of record. <a href="/terms/">Terms</a> · <a href="/privacy/">Privacy</a></p>
         </div>
       </section>
     </main>
 
     <footer>
-      <div><a class="brand" href="/"><span class="brand-mark" aria-hidden="true">↗</span><span>Recipe Exit Pack</span></a><p>Recipes are memories. Keep them somewhere you control.</p></div>
-      <div class="footer-links"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="#converter">Converter</a></div>
-      <p class="disclosure">No tracking. No uploads. Hero illustration generated with AI for this product. © 2026 Recipe Exit Pack.</p>
+      <div><a class="brand" href="/"><span class="brand-mark" aria-hidden="true">↗</span><span>Recipe Exit Pack</span></a><p>Convert recipe exports into files you control.</p></div>
+      <div class="footer-links"><a href="/demo/">Demo</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+      <p class="disclosure">Built by Param Factory · build 00f28f4 · No tracking · No recipe uploads · Hero illustration generated with AI for this product.</p>
     </footer>
     <div id="undo-toast" class="undo-toast" hidden role="status"><span>Recipe removed.</span><button id="undo-remove" type="button">Undo</button></div>
     <script type="module" src="/src/main.ts"></script>

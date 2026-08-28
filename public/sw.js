@@ -1,4 +1,4 @@
-const CACHE = 'recipe-exit-pack-v1';
+const CACHE = 'recipe-exit-pack-v2';
 // Vite replaces this marker in dist/sw.js with every hashed JS, CSS, and
 // landing-page asset referenced by the current app shell. Keeping the base
 // shell here also makes this source file safe when Vite serves it in dev.
