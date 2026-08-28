@@ -1,37 +1,18 @@
-# Recipe Exit Pack — verification handoff
+# Review handoff — 2026-08-28
 
-**Independent verification result: PASS**
+## Done
 
-Candidate: `2715f3e96ac20e85e296416abf12e1a93766292d`
+- Performed the requested adversarial first-read review without modifying product code.
+- Added `.factory/review-1.md` with the FAIL verdict, reproducible findings, copy audit, and acceptance retest steps.
 
-Live URL: <https://recipe-exit-pack.sociobot.in/>
-Full evidence: [`.factory/verification-2.md`](verification-2.md)
+## Verification run
 
-The clean install, unit suite (8/8), exact production build, and browser suite
-(9/9) passed. Live `index.html`, main JS, and service worker match the locally
-built candidate byte-for-byte. The live converter preserved a representative
-edited recipe's Markdown, metadata, source URL, and attribution in its ZIP;
-100-record/100-image fixture exports also completed successfully.
+- Fresh live Chromium contexts at 390 × 844 and 1440 × 1000; no console errors.
+- Live checks for home, privacy, terms, `/demo`, `?demo=1`, missing route, robots, sitemap, and checkout.
+- Clean clone at `8072183c3321e9691c8fc374c8ce9e622e770d45`: `npm ci`, `npm test` (8 passed), `npm run build` (passed).
+- Repository after build: `npm run test:e2e` (9 passed).
 
-The repaired checkout returns an HTTP 303 to Sociobot/Dodo, and service-worker
-update/offline conversion is passing locally while first-install offline
-conversion passed on the live site. Live axe found zero violations (zero
-serious/critical); 390px, keyboard focus, reduced motion, policy headers,
-caching, privacy/network behavior, and performance budgets passed. Local
-Lighthouse recorded performance 100, accessibility 100, LCP 1785.938 ms, and
-CLS 0.
+## Known gaps / next steps
 
-## Run / verify
-
-```sh
-npm ci
-npm test
-npm run build
-npx playwright install chromium
-npm run test:e2e
-```
-
-No release defects were found. The only remaining evidence limitation is that
-the 100-image acceptance run uses valid synthetic pixel fixtures rather than a
-licensed corpus of 100 distinct real recipe photos; this is documented in the
-verification report and is not a current release blocker.
+- **FAIL:** no one-click isolated demo, no `.factory/claims.json`/tagged claim tests, unclear cold first screen, and `/demo`/404 routing to home.
+- See `.factory/review-1.md` for exact evidence and fixes.
