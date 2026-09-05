@@ -51,6 +51,15 @@ test('landing page has no serious accessibility violations', async ({ page }) =>
   expect(blocking, blocking.map((item) => `${item.id}: ${item.help}`).join('\n')).toEqual([]);
 });
 
+test('legal and 404 pages have no serious accessibility violations', async ({ page }) => {
+  for (const path of ['/privacy/', '/terms/', '/404/']) {
+    await page.goto(path);
+    const results = await new AxeBuilder({ page }).analyze();
+    const blocking = results.violations.filter((violation) => ['serious', 'critical'].includes(violation.impact || ''));
+    expect(blocking, `${path}\n${blocking.map((item) => `${item.id}: ${item.help}`).join('\n')}`).toEqual([]);
+  }
+});
+
 test('user-supplied JSON and image files are matched locally', async ({ page }) => {
   await page.goto('/');
   const onePixelPng = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=', 'base64');
