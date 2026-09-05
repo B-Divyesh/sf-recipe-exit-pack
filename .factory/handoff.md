@@ -77,6 +77,14 @@ CSS is 4.70 KB gzip, no font files are loaded, and the 720px hero WebP is
 27.97 KB. The optional HEIC decoder remains a lazy chunk and is not in the
 initial load.
 
+Deployment used the product's existing Azure Static Web App and its committed
+`staticwebapp.config.json`. The live page serves build `50a6801`; the final
+HTTPS verifier returned 200 in 737 ms with no console errors, one h1/main,
+no missing alt text, and no unlabeled buttons. A fresh live phone context put
+the first sample at y=390, selected title at y=512, and download button at
+y=612 in an 844px viewport. Reset restored the sample; Start for real opened
+the empty real converter. The live sample flow made same-origin requests only.
+
 ## Run and deploy
 
 ```sh
@@ -98,3 +106,7 @@ Azure Static Web Apps using the committed static deployment configuration.
   image path, but not a real-world user study.
 - The optional HEIC decoder is intentionally lazy. Its 341 KB gzip chunk only
   downloads when a user supplies HEIC content.
+- Lighthouse 12.8 could start the supplied Chromium but its target crashed
+  while collecting a full-page screenshot in this worker. This is a local
+  measurement-tool limitation; no Lighthouse score is claimed. Bundle budgets,
+  live page load, console, axe, and browser-flow checks are recorded above.
