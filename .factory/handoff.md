@@ -2,7 +2,7 @@
 
 ## Release status
 
-Implementation candidate: `e1376625c0a548a273be14e830e38c1cdb9682ad`.
+Implementation candidate: `50a6801284acff3c0c872bcb86f224553dbab9f6`.
 
 This repair makes the sample route start in the populated workbench, removes
 unproved purchase claims, and proves the remaining public outcomes with the
