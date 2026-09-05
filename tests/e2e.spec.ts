@@ -208,6 +208,7 @@ test('@claim:demo-sample-recipes demo opens on three named recipes and a visible
   await expect(page.getByRole('button', { name: /Weeknight lemon pasta/ })).toBeInViewport();
   await expect(page.getByRole('button', { name: /Roasted tomato soup/ })).toBeInViewport();
   await expect(page.getByRole('button', { name: /Sunday apple crisp/ })).toBeInViewport();
+  await expect(page.getByLabel('Title')).toBeInViewport();
   await expect(page.getByLabel('Title')).toHaveValue('Weeknight lemon pasta');
   await expect(page.getByRole('button', { name: /Download recipe ZIP/ })).toBeInViewport();
 });
