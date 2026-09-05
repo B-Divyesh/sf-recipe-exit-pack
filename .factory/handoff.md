@@ -1,114 +1,55 @@
-# Recipe Exit Pack — repair 2 handoff
+# Recipe Exit Pack — verification 3 handoff
 
-## Release status
+## Verdict
 
-Implementation candidate: `50a6801284acff3c0c872bcb86f224553dbab9f6`.
+**FAIL** — one minor finding, zero untested claims.
 
-This repair makes the sample route start in the populated workbench, removes
-unproved purchase claims, and proves the remaining public outcomes with the
-demo sandbox. The documentation/report commit follows this implementation
-candidate; it does not change the product behaviour.
+- Implementation candidate: `50a6801284acff3c0c872bcb86f224553dbab9f6`
+- Documentation reviewed: `f113f6f53447e6acd464bce4fef94391511f282b`
+- Live URL: <https://recipe-exit-pack.sociobot.in/>
+- Full report: [`.factory/verification-3.md`](verification-3.md)
 
-## What changed
+Product code was not changed.
 
-- `/demo/` moves its only heading into a compact workbench view, hides the
-  marketing hero and import path, and keeps the demo banner, three named
-  recipes, selected title, and **Download recipe ZIP** visible at 390 × 844.
-- Added outcome-based claims and browser coverage for the three-recipe sample,
-  ZIP/JSON/HTML/text/image imports, source-list fields, readable matched
-  photos, and editing before download. The source list now includes supplied
-  notes as promised.
-- Removed the Archive Plus pitch, price, merchant, and license assertions
-  because those purchase outcomes were not sandbox-verifiable. Core import,
-  review, and ZIP download remain free and local.
-- Removed the unused license network path and narrowed the CSP to same-origin
-  connections. The product makes no cross-origin runtime request.
-- Added the shared static-route focus script. Privacy, Terms, 404, and a
-  missing-route response now have a focusable focused h1 and a polite route
-  announcement.
-- Rewrote README storage wording without implementation jargon, completed the
-  copy audit, and copied the verb-first catalog description to
-  `/work/.evidence/catalog-description.txt`.
+## Finding
 
-## Review disposition
+At 390 px, several live links and the compact demo title field are shorter
+than the required 44 CSS pixels. Exact measurements and affected controls are
+in F-3-1 of the report. Increase their hit areas while keeping the populated
+demo controls in the first phone viewport.
 
-| Review 2 finding | Current disposition |
-| --- | --- |
-| F-2-1 mobile demo starts with marketing | Fixed; a 390px browser claim asserts named samples, editable title, and ZIP download are in the initial viewport. |
-| F-2-2 three sample recipes | Fixed; `demo-sample-recipes` claim. |
-| F-2-3 supported input formats | Fixed; `supported-inputs` imports ZIP, JSON, HTML, text, and a matched PNG fixture. |
-| F-2-4 source-list fields | Fixed; notes are exported and `source-list-fields` verifies URL, author, notes, and filename. |
-| F-2-5 readable matched photo | Fixed; `matched-photos` decodes downloaded image bytes and checks the recipe-folder path. |
-| F-2-6 through F-2-10 purchase/free-flow assertions | Unsupported paid statements removed. The retained free-download statement has its own claim test. |
-| F-2-8 review before download | Fixed; `review-before-download` edits a sample and checks the downloaded recipe text. |
-| F-2-11 static route focus | Fixed and covered by direct loads, header navigation, live announcements, and static-route axe checks. |
-| F-2-12 README storage jargon | Fixed; README uses the plain separate-sample statement. |
+## What passed
 
-All review-1 work remains in place: real demo route and isolation, metadata,
-designed 404, shared skeleton, generated-art provenance, service-worker update
-coverage, corrupt-image recovery, and local-first ZIP conversion.
+- The job, audience, and sample action are visible before scrolling on fresh
+  phone and desktop loads.
+- The direct demo starts with three populated recipes, keeps its sample label,
+  downloads a complete ZIP, resets, discards edits, and does not open real
+  recipe storage.
+- Live normal, malformed-input, corrupt-image recovery, 100-recipe boundary,
+  offline, routes, back/forward, focus, reduced-motion, privacy, crawl, legal,
+  and designed-404 checks passed.
+- `npm test`: 8 passed.
+- `npm run build`: passed and produced `dist/`.
+- `npm run test:e2e`: 22 passed.
+- All 11 declared claim commands passed separately. Untested claims: 0.
+- Live HTML, JavaScript, CSS, and service worker matched the clean build byte
+  for byte.
+- Lighthouse: 100 performance, 100 accessibility, 100 best practices, and
+  100 SEO; LCP 1,355 ms, TBT 0 ms, CLS 0.
+- Axe found zero violations after Home, Demo, Privacy, Terms, and 404 reached
+  their ready states.
 
-## Verification
-
-From a fresh clone at the implementation candidate, after `npm ci`:
-
-```sh
-npm test                 # 8 passed
-npm run build            # passed; dist/ produced
-npm run test:e2e         # 22 passed
-```
-
-Every command in `.factory/claims.json` passed separately from that clean
-clone: `recipe-zip-content`, `demo-isolation`, `offline-after-first-visit`,
-`no-recipe-uploads`, `no-tracking`, `free-download`,
-`demo-sample-recipes`, `supported-inputs`, `source-list-fields`,
-`matched-photos`, and `review-before-download`.
-
-Fresh 390 × 844 and 1440 × 1000 Chromium contexts had no console or page
-errors and no horizontal overflow. On the landing page, before scrolling: the
-job is converting a recipe-app export into a ZIP; the audience is people
-leaving a recipe app; and the first action is **Try it with sample data**. On
-the phone demo, named sample recipes, the selected title, and the download
-button are all above y=612 in an 844px viewport.
-
-The browser suite includes axe checks for landing, Privacy, Terms, and 404;
-there are no serious or critical violations. Initial app JS is 15.97 KB gzip,
-CSS is 4.70 KB gzip, no font files are loaded, and the 720px hero WebP is
-27.97 KB. The optional HEIC decoder remains a lazy chunk and is not in the
-initial load.
-
-Deployment used the product's existing Azure Static Web App and its committed
-`staticwebapp.config.json`. The live page serves build `50a6801`; the final
-HTTPS verifier returned 200 in 737 ms with no console errors, one h1/main,
-no missing alt text, and no unlabeled buttons. A fresh live phone context put
-the first sample at y=390, selected title at y=512, and download button at
-y=612 in an 844px viewport. Reset restored the sample; Start for real opened
-the empty real converter. The live sample flow made same-origin requests only.
-Live axe scans of home, demo, Privacy, Terms, and 404 returned zero serious or
-critical violations.
-
-## Run and deploy
+## Reproduce
 
 ```sh
 npm ci
-npm run dev
 npm test
 npm run build
 npm run test:e2e
 ```
 
-Open `/demo/` for the isolated sample. Deploy the generated `dist/` folder to
-Azure Static Web Apps using the committed static deployment configuration.
+Then run every command in `.factory/claims.json` separately and measure all
+visible phone links, buttons, form controls, and summaries at 390 × 844.
 
-## Known limits
-
-- The product cannot independently establish the brief's user-study success
-  rate without a representative, permissioned 100-recipe export corpus. The
-  automated suite does exercise 100 textual records and the complete matched
-  image path, but not a real-world user study.
-- The optional HEIC decoder is intentionally lazy. Its 341 KB gzip chunk only
-  downloads when a user supplies HEIC content.
-- Lighthouse 12.8 could start the supplied Chromium but its target crashed
-  while collecting a full-page screenshot in this worker. This is a local
-  measurement-tool limitation; no Lighthouse score is claimed. Bundle budgets,
-  live page load, console, axe, and browser-flow checks are recorded above.
+Evidence is stored under `/work/.evidence/verify3/`. After F-3-1 is repaired,
+rerun the same checks before changing the verdict to PASS.
