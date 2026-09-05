@@ -16,22 +16,23 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="stylesheet" href="/legal.css" />
+    <script src="/legal.js" defer></script>
     <title>Privacy — Recipe Exit Pack</title>
   </head>
   <body>
     <a class="skip-link" href="#content">Skip to content</a>
     <header><a class="brand" href="/"><span aria-hidden="true">↗</span> Recipe Exit Pack</a><nav aria-label="Main navigation"><a href="/demo/">Demo</a><a aria-current="page" href="/privacy/">Privacy</a></nav></header>
     <main id="content">
-      <p class="eyebrow">Plain-language policy // Updated 27 August 2026</p>
-      <h1>Your recipes stay on your device.</h1>
+      <p class="eyebrow">Privacy policy · updated 5 September 2026</p>
+      <h1 tabindex="-1">How Recipe Exit Pack handles recipe files</h1>
       <p class="lede">Recipe Exit Pack is designed so the server never needs your recipes, notes, photos, or exported archive.</p>
       <section><h2>What the converter processes</h2><p>Files and text you choose are read by code running in your browser. Image conversion and ZIP creation also happen in your browser. Recipe content is not sent to Recipe Exit Pack, Sociobot, or an AI service.</p></section>
-      <section><h2>What is stored</h2><p>The free converter keeps the current work only in the open browser tab. If you unlock Archive Plus, the app can store your current workbench in this browser’s IndexedDB so it can resume later. Your license token and a dated verification result are stored in localStorage under keys beginning with <code>sb_license:recipe-exit-pack</code>. You can clear both using your browser’s site-data controls.</p></section>
-      <section><h2>License verification and checkout</h2><p>When you buy or verify Archive Plus, your browser contacts the Sociobot billing API. Sociobot and Dodo, its merchant-of-record payment provider, process the checkout and related transaction information under their own policies. Recipe Exit Pack does not receive or store card details. The license token is removed from the address bar immediately after it is saved.</p></section>
-      <section><h2>Network and analytics</h2><p>No advertising, behavioral tracking, third-party fonts, or analytics scripts are included. The installed offline worker only caches public app files on your device. Normal hosting logs may record basic request information such as IP address, browser type, and requested path for security and reliability.</p></section>
-      <section><h2>Your choices</h2><p>You can use the core converter without an account or payment. You can use it offline after the first successful visit. Clearing this site’s browser storage removes the local license, offline cache, and any Plus workbench saved on that device.</p></section>
-      <section><h2>Questions</h2><p>For privacy questions, contact the operator through <a href="https://sociobot.in">sociobot.in</a>. Do not include recipe exports or license tokens in an initial message.</p></section>
+      <section><h2>What is stored</h2><p>The converter keeps your current work in the open browser tab. The sample is stored separately on this device and never opens your real recipes.</p></section>
+      <section><h2>Network and analytics</h2><p>No advertising, behavioral tracking, third-party fonts, or analytics scripts are included. The offline worker only caches public app files on your device.</p></section>
+      <section><h2>Your choices</h2><p>You can use the converter offline after the first successful visit. Clearing this site’s browser storage removes the offline cache and saved sample changes.</p></section>
+      <section><h2>Questions</h2><p>For privacy questions, contact the operator through <a href="https://sociobot.in">sociobot.in</a>. Do not include recipe exports in an initial message.</p></section>
     </main>
-    <footer><span>Convert recipe exports into files you control.</span><span><a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a> · Built by Param Factory · build 00f28f4</span></footer>
+    <p id="route-announcer" class="sr-only" aria-live="polite"></p>
+    <footer><span>Convert recipe exports into files you control.</span><span><a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a> · Built by Param Factory · build pending</span></footer>
   </body>
 </html>

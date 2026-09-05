@@ -71,6 +71,8 @@ h1 span { color: var(--sheet); -webkit-text-stroke: 2px var(--ink); text-shadow:
 .demo-banner span { flex: 1 1 240px; }
 .demo-banner button { min-height: 38px; padding: 6px 10px; border: 2px solid var(--ink); background: var(--sheet); font-weight: 800; cursor: pointer; }
 .demo-banner button:last-child { background: var(--ink); color: var(--sheet); }
+.demo-workbench-heading { margin-bottom: 18px; }
+.demo-workbench-heading h1 { margin: 0; font-size: clamp(2rem, 5vw, 3.5rem); }
 .hero-art { position: relative; margin: 0; transform: rotate(1.2deg); }
 .hero-art picture { display: block; overflow: hidden; border: var(--line); box-shadow: 10px 10px 0 var(--ink); background: #eadfbe; }
 .hero-art img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
@@ -103,7 +105,7 @@ summary::before { content: "+"; width: 25px; margin-right: 8px; font-size: 1.4re
 details[open] summary::before { content: "−"; }
 .paste-tray .field { margin: 12px 0; }
 .field { min-width: 0; }
-.field label, .pack-controls > label:not(.check-option), .license-box label { display: flex; justify-content: space-between; margin-bottom: 7px; font-size: .76rem; letter-spacing: .05em; text-transform: uppercase; }
+.field label, .pack-controls > label:not(.check-option) { display: flex; justify-content: space-between; margin-bottom: 7px; font-size: .76rem; letter-spacing: .05em; text-transform: uppercase; }
 .field label span { color: var(--muted); font-family: Arial, sans-serif; font-weight: 700; letter-spacing: 0; text-transform: none; }
 input, textarea { width: 100%; min-height: 44px; padding: 10px 12px; border: 2px solid var(--ink); border-radius: 0; background: var(--sheet); }
 textarea { resize: vertical; font-family: Georgia, Cambria, serif; line-height: 1.5; }
@@ -173,17 +175,6 @@ textarea { resize: vertical; font-family: Georgia, Cambria, serif; line-height: 
 .principle-grid article:nth-child(3) > span { color: var(--ink); background: var(--lime); }
 .principle-grid p { color: var(--muted); }
 
-.support-section { display: grid; grid-template-columns: 1.15fr .85fr; gap: 56px; padding: 80px max(24px, calc((100vw - 1180px)/2)); border-top: var(--line); background: var(--tomato); }
-.support-section h2 { max-width: 18ch; }
-.support-section > div:first-child > p { max-width: 63ch; font-family: Georgia, Cambria, serif; font-size: 1.1rem; }
-.support-section ul { padding-left: 22px; font-weight: 800; }
-.license-box { padding: 24px; border: var(--line); background: var(--sheet); box-shadow: var(--shadow); }
-.license-state { display: inline-block; margin-bottom: 18px; padding: 4px 8px; color: var(--sheet); background: var(--ink); font-weight: 900; text-transform: uppercase; }
-.license-box .button { width: 100%; }
-.license-box details { margin-top: 16px; }
-.license-box form { display: grid; gap: 8px; margin-top: 10px; }
-.merchant-note { margin: 18px 0 0; color: var(--muted); font-size: .78rem; }
-
 footer { display: grid; grid-template-columns: 1fr auto; gap: 28px; padding: 48px max(24px, calc((100vw - 1180px)/2)); border-top: var(--line); background: var(--sheet); }
 footer p { margin: 10px 0 0; color: var(--muted); }
 .footer-links { display: flex; gap: 20px; }
@@ -203,7 +194,7 @@ footer p { margin: 10px 0 0; color: var(--muted); }
   .workbench { grid-template-columns: 1fr; }
   .recipe-queue { border-right: 0; border-bottom: var(--line); }
   .recipe-list { max-height: 260px; }
-  .format-section, .support-section { grid-template-columns: 1fr; }
+  .format-section { grid-template-columns: 1fr; }
   .principle-grid { grid-template-columns: 1fr; }
   .principle-grid article { min-height: 0; border-right: 0; border-bottom: 2px solid var(--ink); }
 }
@@ -234,10 +225,39 @@ footer p { margin: 10px 0 0; color: var(--muted); }
   .pack-controls > * { grid-column: 1 !important; }
   .format-section { gap: 56px; padding: 80px 18px; }
   .folder-map pre { padding: 18px 12px; }
-  .support-section { padding: 64px 18px; }
   footer { grid-template-columns: 1fr; padding: 42px 18px; }
   .footer-links, .disclosure { grid-column: 1; }
   .undo-toast { left: 12px; right: 12px; }
+}
+
+/* The sample route starts in the populated workbench, not in marketing copy. */
+.demo-mode .hero { display: none; }
+.demo-mode .converter-section { padding-top: 36px; }
+.demo-mode #import-panel, .demo-mode #add-more { display: none !important; }
+
+@media (max-width: 560px) {
+  .demo-mode .converter-section { padding: 14px 16px 40px; }
+  .demo-mode .demo-workbench-heading { margin-bottom: 10px; }
+  .demo-mode .demo-workbench-heading h1 { font-size: 1.55rem; line-height: 1; }
+  .demo-mode .section-heading, .demo-mode .step-strip { display: none; }
+  .demo-mode .recipe-queue { border-bottom: 2px solid var(--ink); }
+  .demo-mode .queue-head { min-height: 50px; padding: 8px 12px; }
+  .demo-mode .queue-head .step-stamp, .demo-mode .queue-head h3 { display: none; }
+  .demo-mode .queue-tools { display: none; }
+  .demo-mode .recipe-list { max-height: none; display: grid; grid-template-columns: repeat(3, 1fr); }
+  .demo-mode .recipe-list button { min-height: 54px; grid-template-columns: 1fr; gap: 0; padding: 6px; text-align: center; }
+  .demo-mode .recipe-number, .demo-mode .recipe-list button > span:last-child, .demo-mode .recipe-name small { display: none; }
+  .demo-mode .recipe-name strong { white-space: normal; font-size: .7rem; line-height: 1.1; }
+  .demo-mode .recipe-editor { padding: 12px; }
+  .demo-mode .editor-head { margin-bottom: 10px; padding-bottom: 8px; }
+  .demo-mode .editor-head .button, .demo-mode .file-origin, .demo-mode .editor-grid, .demo-mode .image-check { display: none; }
+  .demo-mode .recipe-editor .field:not(:first-of-type) { display: none; }
+  .demo-mode .recipe-editor .field input { min-height: 38px; padding: 7px 9px; }
+  .demo-mode .pack-panel { gap: 10px; margin-top: 12px; padding: 12px; }
+  .demo-mode .pack-panel .step-stamp, .demo-mode .pack-panel h3, .demo-mode .pack-panel p, .demo-mode .pack-controls > label { display: none; }
+  .demo-mode .pack-controls { gap: 0; }
+  .demo-mode .pack-controls input { display: none; }
+  .demo-mode .button-export { width: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {

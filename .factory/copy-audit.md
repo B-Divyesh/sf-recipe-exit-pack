@@ -1,8 +1,8 @@
 # Copy audit
 
-## Landing page sentence check
+## Landing page and README sentence check
 
-All visitor-facing sentences are 22 words or fewer. The first-screen headline is seven words and starts with the job.
+All visitor-facing sentences are 22 words or fewer. The landing headline has seven words and starts with the job.
 
 | Concept | One term used |
 | --- | --- |
@@ -11,4 +11,4 @@ All visitor-facing sentences are 22 words or fewer. The first-screen headline is
 | Example workspace | demo |
 | Saved user work | workbench |
 
-No landing sentence uses the banned marketing terms from the plain-words check.
+No landing or README sentence uses the banned marketing terms from the plain-words check. Public outcome statements are listed in `.factory/claims.json` and covered by its tagged browser tests.

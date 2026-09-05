@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
-const baseShell = ['/', '/demo/', '/privacy/', '/terms/', '/404/', '/legal.css', '/favicon.svg', '/site.webmanifest', '/assets/hero-recipe-jailbreak-720.webp'];
+const baseShell = ['/', '/demo/', '/privacy/', '/terms/', '/404/', '/legal.css', '/legal.js', '/favicon.svg', '/site.webmanifest', '/assets/hero-recipe-jailbreak-720.webp'];
 
 function appShellPrecache() {
   return {

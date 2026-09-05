@@ -2,7 +2,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 import { readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { strFromU8, unzipSync } from 'fflate';
+import { strFromU8, strToU8, unzipSync, zipSync } from 'fflate';
 
 async function openDemo(page: import('@playwright/test').Page): Promise<void> {
   await page.goto('/demo/');
@@ -104,19 +104,28 @@ test('legal pages expose one heading and a main landmark', async ({ page }) => {
     await page.goto(path);
     await expect(page.locator('h1')).toHaveCount(1);
     await expect(page.locator('main')).toHaveCount(1);
+    await expect(page.locator('h1')).toBeFocused();
+    await expect(page.locator('#route-announcer')).toHaveText(/Recipe Exit Pack/);
   }
 });
 
-test('demo, legal, and 404 routes have their own titles, metadata, and focus target', async ({ page }) => {
+test('demo, legal, and 404 routes have their own titles, metadata, focus, and announcements', async ({ page }) => {
   await page.goto('/demo/');
   await expect(page).toHaveTitle('Demo — Recipe Exit Pack');
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://recipe-exit-pack.sociobot.in/demo/');
   await expect(page.locator('meta[property="og:image"]')).toHaveCount(1);
   await expect(page.locator('h1')).toBeFocused();
   await expect(page.locator('#route-announcer')).toHaveText('Demo loaded.');
+  await page.goto('/');
+  await page.getByLabel('Main navigation').getByRole('link', { name: 'Privacy' }).click();
+  await expect(page).toHaveTitle('Privacy — Recipe Exit Pack');
+  await expect(page.locator('h1')).toBeFocused();
+  await expect(page.locator('#route-announcer')).toHaveText('Privacy — Recipe Exit Pack');
   await page.goto('/404/');
   await expect(page).toHaveTitle('Page not found — Recipe Exit Pack');
   await expect(page.locator('h1')).toHaveCount(1);
+  await expect(page.locator('h1')).toBeFocused();
+  await expect(page.locator('#route-announcer')).toHaveText('Page not found — Recipe Exit Pack');
   await expect(page.getByRole('link', { name: 'Go to the converter' })).toBeVisible();
 });
 
@@ -142,7 +151,7 @@ test('an updated service worker precaches the current app shell for offline relo
     await page.goto('/');
     await page.evaluate(() => navigator.serviceWorker.ready);
     await page.reload();
-    await writeFile(path, serviceWorker.replace("recipe-exit-pack-v2", 'recipe-exit-pack-regression-update'));
+    await writeFile(path, serviceWorker.replace("recipe-exit-pack-v3", 'recipe-exit-pack-regression-update'));
     await page.evaluate(async () => {
       const registration = await navigator.serviceWorker.ready;
       const controllerChanged = new Promise<void>((resolve, reject) => {
@@ -174,7 +183,7 @@ test('an updated service worker precaches the current app shell for offline relo
   }
 });
 
-test('@claim:recipe-zip-content demo download contains each promised file type', async ({ page }) => {
+test('@claim:recipe-zip-content demo download contains a recipe folder and each promised file type', async ({ page }) => {
   await openDemo(page);
   const downloadPromise = page.waitForEvent('download');
   await page.getByRole('button', { name: /Download recipe ZIP/ }).click();
@@ -190,7 +199,17 @@ test('@claim:recipe-zip-content demo download contains each promised file type',
     'manifest/sources.md',
     'manifest/recipes.json'
   ]));
-  expect(strFromU8(entries['manifest/sources.md'])).toContain('Mara Lee');
+  expect(names.filter((name) => name.endsWith('/recipe.md'))).toHaveLength(3);
+});
+
+test('@claim:demo-sample-recipes demo opens on three named recipes and a visible download action at phone size', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await openDemo(page);
+  await expect(page.getByRole('button', { name: /Weeknight lemon pasta/ })).toBeInViewport();
+  await expect(page.getByRole('button', { name: /Roasted tomato soup/ })).toBeInViewport();
+  await expect(page.getByRole('button', { name: /Sunday apple crisp/ })).toBeInViewport();
+  await expect(page.getByLabel('Title')).toHaveValue('Weeknight lemon pasta');
+  await expect(page.getByRole('button', { name: /Download recipe ZIP/ })).toBeInViewport();
 });
 
 test('@claim:demo-isolation sample edits reset without opening real storage', async ({ page }) => {
@@ -247,4 +266,68 @@ test('@claim:free-download sample ZIP downloads with no stored license', async (
   const downloadPromise = page.waitForEvent('download');
   await page.getByRole('button', { name: /Download recipe ZIP/ }).click();
   await expect(await downloadPromise).toBeTruthy();
+});
+
+test('@claim:supported-inputs imports ZIP, JSON, HTML, text, and a matched recipe image', async ({ page }) => {
+  await openDemo(page);
+  const onePixelPng = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=', 'base64');
+  const zip = zipSync({
+    'zip-chili.json': strToU8(JSON.stringify({ name: 'ZIP chili', ingredients: ['beans'], directions: ['Simmer.'] }))
+  });
+  await page.locator('#file-input').setInputFiles([
+    { name: 'sample-export.zip', mimeType: 'application/zip', buffer: Buffer.from(zip) },
+    { name: 'json-cake.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify({ name: 'JSON cake', ingredients: ['flour'], directions: ['Bake.'], photo_filename: 'image-cake.png' })) },
+    { name: 'html-stew.html', mimeType: 'text/html', buffer: Buffer.from('<script type="application/ld+json">{"@type":"Recipe","name":"HTML stew","recipeIngredient":["stock"],"recipeInstructions":["Heat."]}</script>') },
+    { name: 'text-toast.md', mimeType: 'text/markdown', buffer: Buffer.from('# Text toast\n\nIngredients\n- bread\n\nDirections\n1. Toast it.') },
+    { name: 'image-cake.png', mimeType: 'image/png', buffer: onePixelPng }
+  ]);
+  for (const title of ['ZIP chili', 'JSON cake', 'HTML stew', 'Text toast']) {
+    await expect(page.getByRole('button', { name: new RegExp(title, 'i') })).toBeVisible();
+  }
+  await page.getByRole('button', { name: /JSON cake/ }).click();
+  await expect(page.locator('#image-preview img')).toBeVisible();
+});
+
+test('@claim:source-list-fields demo source list preserves links, authors, notes, and imported filenames', async ({ page }) => {
+  await openDemo(page);
+  const downloadPromise = page.waitForEvent('download');
+  await page.getByRole('button', { name: /Download recipe ZIP/ }).click();
+  const path = await (await downloadPromise).path();
+  expect(path).not.toBeNull();
+  const entries = unzipSync(new Uint8Array(await readFile(path!)));
+  const sourceList = strFromU8(entries['manifest/sources.md']);
+  expect(sourceList).toContain('https://recipes.example.test/weeknight-lemon-pasta');
+  expect(sourceList).toContain('Mara Lee');
+  expect(sourceList).toContain('A fast dinner from the old family folder.');
+  expect(sourceList).toContain('mara-recipes.json');
+});
+
+test('@claim:matched-photos demo ZIP includes a readable image in the matching recipe folder', async ({ page }) => {
+  await openDemo(page);
+  const downloadPromise = page.waitForEvent('download');
+  await page.getByRole('button', { name: /Download recipe ZIP/ }).click();
+  const path = await (await downloadPromise).path();
+  expect(path).not.toBeNull();
+  const entries = unzipSync(new Uint8Array(await readFile(path!)));
+  const imageName = 'recipes/001-weeknight-lemon-pasta/image.png';
+  expect(entries[imageName]).toBeDefined();
+  const dimensions = await page.evaluate(async (bytes) => {
+    const bitmap = await createImageBitmap(new Blob([new Uint8Array(bytes)], { type: 'image/png' }));
+    const result = { width: bitmap.width, height: bitmap.height };
+    bitmap.close();
+    return result;
+  }, Array.from(entries[imageName]));
+  expect(dimensions.width).toBeGreaterThan(0);
+  expect(dimensions.height).toBeGreaterThan(0);
+});
+
+test('@claim:review-before-download demo edits a reviewed recipe before its ZIP is downloaded', async ({ page }) => {
+  await openDemo(page);
+  await page.getByLabel('Title').fill('Edited weeknight lemon pasta');
+  const downloadPromise = page.waitForEvent('download');
+  await page.getByRole('button', { name: /Download recipe ZIP/ }).click();
+  const path = await (await downloadPromise).path();
+  expect(path).not.toBeNull();
+  const entries = unzipSync(new Uint8Array(await readFile(path!)));
+  expect(strFromU8(entries['recipes/001-edited-weeknight-lemon-pasta/recipe.md'])).toContain('# Edited weeknight lemon pasta');
 });

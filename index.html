@@ -71,6 +71,7 @@
       </section>
 
       <section id="converter" class="converter-section" aria-labelledby="converter-title">
+        <div id="demo-workbench-heading" class="demo-workbench-heading" hidden></div>
         <div class="section-heading">
           <p class="eyebrow">Your recipe ZIP</p>
           <h2 id="converter-title">Convert your recipe export</h2>
@@ -88,7 +89,7 @@
           <div class="import-copy">
             <span class="step-stamp">Step 1</span>
             <h3 id="import-title">Bring in your recipes</h3>
-            <p>Choose an app export or paste one recipe. Common ZIP, JSON, HTML, text, and recipe-image files work here.</p>
+            <p>Choose an app export or paste one recipe. ZIP, JSON, HTML, text, and recipe-image files work here.</p>
           </div>
           <div id="drop-zone" class="drop-zone">
             <input id="file-input" type="file" multiple aria-label="Choose recipe export files" accept=".zip,.melarecipes,.paprikarecipes,.paprikarecipe,.json,.jsonld,.html,.htm,.md,.markdown,.txt,.recipe,.jpg,.jpeg,.png,.webp,.gif,.heic,.heif,.avif,application/zip,image/*" />
@@ -172,7 +173,6 @@
           <div class="pack-controls">
             <label for="archive-name">Archive name</label>
             <input id="archive-name" type="text" value="my-recipe-exit-pack" />
-            <label id="yaml-option" class="check-option locked-option"><input id="include-yaml" type="checkbox" disabled /> <span>Notes-app fields <b>Plus</b></span></label>
             <button id="download-pack" class="button button-export" type="button">Download recipe ZIP <span aria-hidden="true">↘</span></button>
           </div>
           <div id="export-progress" class="export-progress" hidden aria-live="polite">
@@ -207,34 +207,12 @@
         </div>
       </section>
 
-      <section id="support" class="support-section" aria-labelledby="support-title">
-        <div>
-          <p class="eyebrow">One-time option</p>
-          <h2 id="support-title">Archive Plus — $9 once</h2>
-          <p>The free converter imports, edits, and downloads recipe ZIPs. Archive Plus adds saved work, duplicate hints, and notes-app fields.</p>
-          <ul><li>One-time purchase, no subscription</li><li>Restore a license on your devices</li><li>Recipe ZIP download stays free</li></ul>
-        </div>
-        <div class="license-box">
-          <p id="license-state" class="license-state">Free edition</p>
-          <a id="buy-link" class="button button-primary" href="https://api.sociobot.in/api/v1/products/recipe-exit-pack/checkout">Buy Archive Plus — $9</a>
-          <details>
-            <summary>Have a license? Restore it</summary>
-            <form id="license-form">
-              <label for="license-input">License token</label>
-              <input id="license-input" type="text" autocomplete="off" spellcheck="false" />
-              <button class="button button-secondary" type="submit">Check my Archive Plus license</button>
-              <p id="license-message" class="field-hint" aria-live="polite"></p>
-            </form>
-          </details>
-          <p class="merchant-note">Sociobot / Dodo is the merchant of record. <a href="/terms/">Terms</a> · <a href="/privacy/">Privacy</a></p>
-        </div>
-      </section>
     </main>
 
     <footer>
       <div><a class="brand" href="/"><span class="brand-mark" aria-hidden="true">↗</span><span>Recipe Exit Pack</span></a><p>Convert recipe exports into files you control.</p></div>
       <div class="footer-links"><a href="/demo/">Demo</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
-      <p class="disclosure">Built by Param Factory · build 00f28f4 · No tracking · No recipe uploads · Hero illustration generated with AI for this product.</p>
+      <p class="disclosure">Built by Param Factory · build pending · No tracking · No recipe uploads · Hero illustration generated with AI for this product.</p>
     </footer>
     <div id="undo-toast" class="undo-toast" hidden role="status"><span>Recipe removed.</span><button id="undo-remove" type="button">Undo</button></div>
     <script type="module" src="/src/main.ts"></script>

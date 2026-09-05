@@ -1,7 +1,7 @@
 [
   {
     "id": "recipe-zip-content",
-    "claim": "Download a recipe ZIP with recipe text files, a data file, photos, and a source list.",
+    "claim": "Download a recipe ZIP with a folder for each recipe, recipe text files, data files, photos, and a source list.",
     "where": "landing format section, converter, README",
     "test": "npm run test:e2e -- --grep @claim:recipe-zip-content",
     "sandbox": "fresh /demo/ context; download sample ZIP and inspect its entries"
@@ -40,5 +40,40 @@
     "where": "Archive Plus section, README",
     "test": "npm run test:e2e -- --grep @claim:free-download",
     "sandbox": "fresh /demo/ context without license storage; download the sample ZIP"
+  },
+  {
+    "id": "demo-sample-recipes",
+    "claim": "The demo opens with three named recipes that you can review and download.",
+    "where": "landing sample action, demo workbench",
+    "test": "npm run test:e2e -- --grep @claim:demo-sample-recipes",
+    "sandbox": "fresh 390px /demo/ context; assert the named recipes, editable selected title, and download action are visible without scrolling"
+  },
+  {
+    "id": "supported-inputs",
+    "claim": "Import recipe data from ZIP, JSON, HTML, and text files, and match a supplied recipe image.",
+    "where": "converter import instructions",
+    "test": "npm run test:e2e -- --grep @claim:supported-inputs",
+    "sandbox": "fresh /demo/ context; import representative ZIP, JSON, HTML, text, and PNG fixtures and inspect the reviewed recipes"
+  },
+  {
+    "id": "source-list-fields",
+    "claim": "The source list preserves source links, authors, notes, and imported filenames.",
+    "where": "recipe ZIP contents, README",
+    "test": "npm run test:e2e -- --grep @claim:source-list-fields",
+    "sandbox": "fresh /demo/ context; download the sample ZIP and inspect the source-list fields"
+  },
+  {
+    "id": "matched-photos",
+    "claim": "A matched readable photo is included in its recipe folder.",
+    "where": "recipe ZIP contents, README",
+    "test": "npm run test:e2e -- --grep @claim:matched-photos",
+    "sandbox": "fresh /demo/ context; download the sample ZIP, decode its image, and verify its recipe-folder path"
+  },
+  {
+    "id": "review-before-download",
+    "claim": "Review and edit recipes before you download the ZIP.",
+    "where": "converter instructions, README",
+    "test": "npm run test:e2e -- --grep @claim:review-before-download",
+    "sandbox": "fresh /demo/ context; edit a reviewed sample, download the ZIP, and inspect the saved edit"
   }
 ]

@@ -46,7 +46,7 @@ export function buildArchive(recipes: Recipe[], options: ExportOptions): Archive
   });
   const sourceLines = ['# Source and attribution manifest', '', 'Generated locally by Recipe Exit Pack. Source details are preserved as supplied; verify them before redistribution.', ''];
   for (const recipe of recipes) {
-    sourceLines.push(`## ${recipe.title}`, '', recipe.sourceUrl ? `- Source URL: ${recipe.sourceUrl}` : '- Source URL: not present', recipe.attribution ? `- Attribution: ${recipe.attribution}` : '- Attribution: not present', `- Imported from: ${recipe.originalFile}`, '');
+    sourceLines.push(`## ${recipe.title}`, '', recipe.sourceUrl ? `- Source URL: ${recipe.sourceUrl}` : '- Source URL: not present', recipe.attribution ? `- Attribution: ${recipe.attribution}` : '- Attribution: not present', recipe.notes ? `- Notes: ${recipe.notes}` : '- Notes: not present', `- Imported from: ${recipe.originalFile}`, '');
   }
   files['manifest/sources.md'] = strToU8(sourceLines.join('\n'));
   files['manifest/recipes.json'] = strToU8(JSON.stringify({ format: 'recipe-exit-pack/1', exportedAt: new Date().toISOString(), recipes: metadata }, null, 2));

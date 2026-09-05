@@ -1,11 +1,9 @@
 import './style.css';
 import { buildArchive } from './exporter';
 import { imageFromFile, normalizeImage, withPreview } from './images';
-import { initializeLicense, verifyLicense } from './license';
 import { parseFiles, parseJson, parseRecipeText } from './parser';
-import { clearDemoWorkbench, loadDemoWorkbench, saveDemoWorkbench, loadWorkbench, saveWorkbench } from './storage';
+import { clearDemoWorkbench, loadDemoWorkbench, saveDemoWorkbench } from './storage';
 import { sampleRecipes } from './demo';
-import type { LicenseState } from './license';
 import type { Recipe } from './types';
 
 const $ = <T extends HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
@@ -13,6 +11,7 @@ const requestedDemo = new URL(location.href).searchParams.get('demo') === '1';
 const isDemo = requestedDemo || location.pathname === '/demo' || location.pathname === '/demo/';
 if (requestedDemo) history.replaceState({}, '', '/demo/');
 if (isDemo) {
+  document.body.classList.add('demo-mode');
   document.title = 'Demo — Recipe Exit Pack';
   document.querySelector('meta[name="description"]')?.setAttribute('content', 'Try three sample recipes and download a recipe ZIP without saving to your real data.');
 }
@@ -29,7 +28,6 @@ const undoToast = $('#undo-toast');
 
 let recipes: Recipe[] = [];
 let selectedId = '';
-let unlocked = false;
 let removed: { recipe: Recipe; index: number } | null = null;
 let undoTimer = 0;
 let saveTimer = 0;
@@ -128,17 +126,11 @@ function updateLayout(): void {
 }
 
 function scheduleSave(): void {
-  if (!unlocked && !isDemo) return;
+  if (!isDemo) return;
   window.clearTimeout(saveTimer);
   saveTimer = window.setTimeout(() => {
-    const save = isDemo ? saveDemoWorkbench : saveWorkbench;
-    save(recipes).catch(() => showMessage(isDemo ? 'The sample changes could not be saved. Reset the demo to restore it.' : 'Auto-resume could not save this workbench. Your current recipes are still safe in this tab.', true));
+    saveDemoWorkbench(recipes).catch(() => showMessage('The sample changes could not be saved. Reset the demo to restore it.', true));
   }, 450);
-}
-
-function duplicates(): number {
-  const keys = recipes.map((recipe) => `${recipe.title.trim().toLowerCase()}|${recipe.sourceUrl.trim().toLowerCase()}`);
-  return keys.length - new Set(keys).size;
 }
 
 async function addFiles(files: File[]): Promise<void> {
@@ -164,8 +156,7 @@ async function addFiles(files: File[]): Promise<void> {
     if (!selectedId && recipes[0]) selectedId = recipes[0].id;
     updateLayout(); scheduleSave();
     if (result.recipes.length) {
-      const dupeText = unlocked && duplicates() ? ` Plus found ${duplicates()} possible duplicate${duplicates() === 1 ? '' : 's'}; compare titles in the stack.` : '';
-      showMessage(`Added ${result.recipes.length} recipe${result.recipes.length === 1 ? '' : 's'} from ${result.filesRead} file${result.filesRead === 1 ? '' : 's'}.${dupeText}`);
+      showMessage(`Added ${result.recipes.length} recipe${result.recipes.length === 1 ? '' : 's'} from ${result.filesRead} file${result.filesRead === 1 ? '' : 's'}.`);
     }
     if (result.warnings.length) showMessage(result.warnings.join(' '), true);
   } catch (error) {
@@ -230,7 +221,7 @@ $('#download-pack').addEventListener('click', async () => {
   progress.hidden = false; button.disabled = true;
   await new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve, 40)));
   try {
-    const result = buildArchive(recipes, { archiveName: ($('#archive-name') as HTMLInputElement).value, includeYaml: unlocked && ($('#include-yaml') as HTMLInputElement).checked });
+    const result = buildArchive(recipes, { archiveName: ($('#archive-name') as HTMLInputElement).value, includeYaml: false });
     const url = URL.createObjectURL(new Blob([result.bytes as BlobPart], { type: 'application/zip' }));
     const link = document.createElement('a'); link.href = url; link.download = result.fileName; document.body.append(link); link.click(); link.remove();
     window.setTimeout(() => URL.revokeObjectURL(url), 30_000);
@@ -239,46 +230,18 @@ $('#download-pack').addEventListener('click', async () => {
   finally { progress.hidden = true; button.disabled = false; }
 });
 
-function applyLicenseState(state: LicenseState): void {
-  const wasUnlocked = unlocked;
-  unlocked = state.unlocked;
-  const label = $('#license-state');
-  const yaml = $('#include-yaml') as HTMLInputElement;
-  yaml.disabled = !unlocked;
-  $('#yaml-option').classList.toggle('locked-option', !unlocked);
-  if (state.checking) label.textContent = state.unlocked ? 'Archive Plus · checking' : 'Checking license…';
-  else if (state.unlocked) label.textContent = 'Archive Plus unlocked';
-  else if (state.reason === 'network') label.textContent = 'License check unavailable';
-  else if (state.reason && state.reason !== 'ok') label.textContent = 'License no longer active';
-  else label.textContent = 'Free edition';
-  if (unlocked && !wasUnlocked) {
-    loadWorkbench().then((saved) => {
-      if (!recipes.length && saved.length) {
-        recipes = saved.map((recipe) => ({ ...recipe, image: recipe.image ? withPreview(recipe.image) : undefined }));
-        selectedId = recipes[0]?.id ?? ''; updateLayout(); showMessage(`Restored ${recipes.length} recipe${recipes.length === 1 ? '' : 's'} from your local Plus workbench.`);
-      } else scheduleSave();
-    }).catch(() => { /* optional restore */ });
-  }
-}
-
-$('#license-form').addEventListener('submit', (event) => {
-  event.preventDefault();
-  if (isDemo) { $('#license-message').textContent = 'Start for real before restoring a license.'; return; }
-  const token = ($('#license-input') as HTMLInputElement).value.trim();
-  const message = $('#license-message');
-  if (!token) { message.textContent = 'Paste the license token from your receipt.'; return; }
-  message.textContent = 'Checking with Sociobot…';
-  verifyLicense(token, (state) => { applyLicenseState(state); if (!state.checking) message.textContent = state.unlocked ? 'License restored on this device.' : state.reason === 'network' ? 'Could not reach verification. Try again when online.' : 'That license is not active for Recipe Exit Pack.'; });
-});
-
 window.addEventListener('online', updateConnection);
 window.addEventListener('offline', updateConnection);
 updateConnection();
 if (isDemo) {
   $('#demo-banner').hidden = false;
-  $('#support').hidden = true;
-  $('#hero-title').textContent = 'Try the sample recipe ZIP';
-  $('#hero-lede').textContent = 'See three sample recipes ready to review and download.';
+  const hero = document.querySelector('.hero') as HTMLElement;
+  const demoHeading = $('#demo-workbench-heading');
+  const title = $('#hero-title');
+  title.textContent = 'Review sample recipes and download a ZIP.';
+  demoHeading.append(title);
+  demoHeading.hidden = false;
+  hero.hidden = true;
   $('#demo-action').hidden = true;
   loadDemoWorkbench().then((saved) => {
     recipes = saved.length ? saved.map((recipe) => ({ ...recipe, image: recipe.image ? withPreview(recipe.image) : undefined })) : sampleRecipes();
@@ -297,8 +260,6 @@ if (isDemo) {
     await clearDemoWorkbench();
     location.assign('/');
   });
-} else {
-  initializeLicense(applyLicenseState);
 }
 requestAnimationFrame(() => {
   $('#route-announcer').textContent = isDemo ? 'Demo loaded.' : 'Recipe Exit Pack loaded.';

@@ -1,11 +1,10 @@
 import type { Recipe } from './types';
 
-const DB_NAME = 'recipe-exit-pack';
 const DEMO_DB_NAME = 'demo:recipe-exit-pack';
 const STORE = 'workbench';
 const KEY = 'current';
 
-function openDb(name = DB_NAME): Promise<IDBDatabase> {
+function openDb(name: string): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(name, 1);
     request.onupgradeneeded = () => request.result.createObjectStore(STORE);
@@ -46,12 +45,8 @@ async function clear(dbName: string): Promise<void> {
   db.close();
 }
 
-export const saveWorkbench = (recipes: Recipe[]) => save(DB_NAME, recipes);
-export const loadWorkbench = () => load(DB_NAME);
-export const clearWorkbench = () => clear(DB_NAME);
-
 // Demo data is deliberately kept in its own IndexedDB namespace. The demo
-// never opens the real workbench database or license storage.
+// never opens a real-workbench database.
 export const saveDemoWorkbench = (recipes: Recipe[]) => save(DEMO_DB_NAME, recipes);
 export const loadDemoWorkbench = () => load(DEMO_DB_NAME);
 export const clearDemoWorkbench = () => clear(DEMO_DB_NAME);
