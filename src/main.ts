@@ -83,7 +83,7 @@ function fillEditor(): void {
     img.src = recipe.image.previewUrl!;
     img.alt = `Preview of ${recipe.title}`;
     preview.append(img);
-    status.textContent = recipe.image.normalized ? 'Matched and normalized to WebP.' : `Matched ${recipe.image.extension.toUpperCase()} image; preserved in its readable source format.`;
+    status.textContent = 'Matched readable image.';
   } else {
     preview.innerHTML = '<span aria-hidden="true">▧</span><p>No matched image</p>';
     status.textContent = 'Add an image if your export did not include one.';
@@ -111,7 +111,7 @@ function renderList(): void {
 
 function renderPackSummary(): void {
   const withImages = recipes.filter((recipe) => recipe.image).length;
-  $('#pack-summary').textContent = `${recipes.length} recipe${recipes.length === 1 ? '' : 's'} ready · ${withImages} matched image${withImages === 1 ? '' : 's'} · source manifest included.`;
+  $('#pack-summary').textContent = `${recipes.length} recipe${recipes.length === 1 ? '' : 's'} ready · ${withImages} matched image${withImages === 1 ? '' : 's'} · source list included.`;
 }
 
 function updateLayout(): void {
@@ -160,7 +160,7 @@ async function addFiles(files: File[]): Promise<void> {
     }
     if (result.warnings.length) showMessage(result.warnings.join(' '), true);
   } catch (error) {
-    showMessage(`Those files could not be read: ${error instanceof Error ? error.message : 'unknown error'}. Try an unencrypted ZIP, JSON, Markdown, or plain text export.`, true);
+    showMessage(`Could not read those files: ${error instanceof Error ? error.message : 'unknown error'}. Try an unencrypted ZIP, JSON, Markdown, or text export.`, true);
   } finally { fileInput.disabled = false; fileInput.value = ''; }
 }
 
@@ -225,7 +225,7 @@ $('#download-pack').addEventListener('click', async () => {
     const url = URL.createObjectURL(new Blob([result.bytes as BlobPart], { type: 'application/zip' }));
     const link = document.createElement('a'); link.href = url; link.download = result.fileName; document.body.append(link); link.click(); link.remove();
     window.setTimeout(() => URL.revokeObjectURL(url), 30_000);
-    showMessage(`Exit pack downloaded: ${recipes.length} recipes and ${result.imageCount} images. Keep the ZIP somewhere you control.`);
+    showMessage(`Recipe ZIP downloaded: ${recipes.length} recipes and ${result.imageCount} images. Keep the ZIP somewhere you control.`);
   } catch (error) { showMessage(`The archive could not be built: ${error instanceof Error ? error.message : 'unknown error'}. Your recipes remain in this tab.`, true); }
   finally { progress.hidden = true; button.disabled = false; }
 });
