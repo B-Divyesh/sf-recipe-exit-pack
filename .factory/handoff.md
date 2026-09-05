@@ -84,6 +84,8 @@ no missing alt text, and no unlabeled buttons. A fresh live phone context put
 the first sample at y=390, selected title at y=512, and download button at
 y=612 in an 844px viewport. Reset restored the sample; Start for real opened
 the empty real converter. The live sample flow made same-origin requests only.
+Live axe scans of home, demo, Privacy, Terms, and 404 returned zero serious or
+critical violations.
 
 ## Run and deploy
 
